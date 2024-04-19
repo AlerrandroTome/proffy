@@ -22,11 +22,15 @@ function Landing() {
             <div className="buttons-container">
                 <Link to="/study" className="study">
                     <img src={studyIcon} alt="Study" />
-                    Study
+                    <p>
+                        Study
+                    </p>
                 </Link>
                 <Link to="/give-classes" className="give-classes">
                     <img src={giveClassesIcon} alt="Give Class" />
-                    Give Classes
+                    <p>
+                        Give Classes
+                    </p>
                 </Link>
             </div>
 
