@@ -44,7 +44,7 @@ export default class ClassesController
 
     async create(request: Request, response: Response) 
      {
-        const { name, avatar, whatsapp, bio, subject, cost, schedule } = request.body;
+        const { name, avatar, whatsapp, bio, subject, cost, scheduleItems } = request.body;
     
         const trx = await db.transaction();
         
@@ -56,7 +56,7 @@ export default class ClassesController
             const insertedClassesIds = await trx('classes').insert({ cost, subject, user_id });
             const class_id = insertedClassesIds[0];
         
-            const classSchedule = schedule.map((scheduleItem: ScheduleItem) => {
+            const classScheduleItems = scheduleItems.map((scheduleItem: ScheduleItem) => {
         
                 return {
                     class_id,
@@ -66,7 +66,7 @@ export default class ClassesController
                 };
             });
         
-            await trx('class_schedule').insert(classSchedule);
+            await trx('class_schedule').insert(classScheduleItems);
             await trx.commit();
         
             return response.status(201).send();
