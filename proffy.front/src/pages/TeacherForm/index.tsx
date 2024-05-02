@@ -84,6 +84,7 @@ function TeacherForm() {
                                 {value: 'Physical', label: 'Physical'},
                                 {value: 'Geography', label: 'Geography'},
                                 {value: 'Mathematics', label: 'Mathematics'},
+                                {value: 'History', label: 'History'},
                                 {value: 'Chemical', label: 'Chemical'}]} />
                         <Input label='Cost per hour' name='cost' value={cost} onChange={(e) => { setCost(e.target.value) }} />
                     </fieldset>
