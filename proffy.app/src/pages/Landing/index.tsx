@@ -1,5 +1,7 @@
-import { StatusBar } from 'expo-status-bar';
-import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Image, Text, View, TouchableOpacity } from 'react-native';
+import { ParamListBase, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 import styles from './styles';
 
 import landingImg from '../../assets/images/landing.png';
@@ -8,6 +10,16 @@ import giveClassIcon from '../../assets/images/icons/give-classes.png';
 import hearthIcon from '../../assets/images/icons/heart.png';
 
 function Landing() {
+    const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+
+    function handleNavigateToGiveClassesPage() {
+        navigation.navigate('GiveClasses', {});
+    }
+
+    function handleNavigateToStudyPages() {
+        navigation.navigate('Study', {});
+    }
+
   return (
     <View style={styles.container}>
         <Image source={landingImg} style={styles.banner} />
@@ -18,13 +30,13 @@ function Landing() {
             </Text>
         </Text>
         <View style={styles.buttonsContainer}>
-            <TouchableOpacity style={[styles.button, styles.buttonPrimary]}>
+            <TouchableOpacity onPress={handleNavigateToStudyPages} style={[styles.button, styles.buttonPrimary]}>
                 <Image source={studyIcon} />
-                <Text>Study</Text>
+                <Text style={styles.buttonText}>Study</Text>
             </TouchableOpacity>            
-            <TouchableOpacity style={[styles.button, styles.buttonSecondary]}>
+            <TouchableOpacity onPress={handleNavigateToGiveClassesPage} style={[styles.button, styles.buttonSecondary]}>
                 <Image source={giveClassIcon} />
-                <Text>Give Class</Text>
+                <Text style={styles.buttonText}>Give Class</Text>
             </TouchableOpacity>
         </View>
         <Text style={styles.totalConnections}>

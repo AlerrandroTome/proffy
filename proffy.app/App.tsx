@@ -1,11 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useCallback, useEffect } from 'react';
-import Landing from './src/pages/Landing';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { Archivo_400Regular, Archivo_700Bold, useFonts } from '@expo-google-fonts/archivo';
 import { Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 import { SafeAreaView, View } from 'react-native';
+import AppStack from './src/routes/AppStack';
 
 SplashScreen.preventAutoHideAsync();
 export default function App() {
@@ -39,7 +39,7 @@ export default function App() {
 
   return (
     <SafeAreaView style={{flex: 1}} onLayout={onLayoutRootView}>
-      <Landing />
+      <AppStack />
       <StatusBar style="light" />
     </SafeAreaView>
   );
