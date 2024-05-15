@@ -8,8 +8,11 @@ import landingImg from '../../assets/images/landing.png';
 import studyIcon from '../../assets/images/icons/study.png';
 import giveClassIcon from '../../assets/images/icons/give-classes.png';
 import hearthIcon from '../../assets/images/icons/heart.png';
+import { useEffect, useState } from 'react';
+import api from '../../services/api';
 
 function Landing() {
+    const [totalConnections, setTotalConnections] = useState(0);
     const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
     function handleNavigateToGiveClassesPage() {
@@ -20,7 +23,14 @@ function Landing() {
         navigation.navigate('Study', {});
     }
 
-  return (
+
+    useEffect(() => {
+        api.get('connections').then(response => {
+            setTotalConnections(response.data.total);
+        });
+    }, []);
+
+    return (
     <View style={styles.container}>
         <Image source={landingImg} style={styles.banner} />
         <Text style={styles.title}>
@@ -40,11 +50,11 @@ function Landing() {
             </TouchableOpacity>
         </View>
         <Text style={styles.totalConnections}>
-            Total of 208 connections {' '}
+            Total of {totalConnections} connections already made {' '}
             <Image source={hearthIcon} />
         </Text>
     </View>
-  );
+    );
 }
 
 export default Landing

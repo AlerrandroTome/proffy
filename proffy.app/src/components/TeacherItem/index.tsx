@@ -1,41 +1,95 @@
-import React from 'react';
-import { Image, View, Text, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { Image, View, Text, TouchableOpacity, Linking } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import styles from './styles';
 
 import heartOutlineIcon from '../../assets/images/icons/heart-outline.png';
 import unfavoriteIcon from '../../assets/images/icons/unfavorite.png';
 import whatsappIcon from '../../assets/images/icons/whatsapp.png';
+import api from '../../services/api';
 
-interface TeacherItemProps {
+export interface Teacher {
+    id: number,
+    subject: string,
+    cost: number,
+    user_id: number,
+    name: string,
+    avatar: string,
+    whatsapp: string,
+    bio: string
 }
 
-const TeacherItem: React.FC<TeacherItemProps> = () => {
+export interface TeacherItemProps {
+    teacher: Teacher;
+    favorited: boolean;
+}
+
+
+const TeacherItem: React.FC<TeacherItemProps> = ({ teacher, favorited }) => {
+    const [isFavorited, setIsFavorited] = useState(favorited);
+
+    function handleLinkToWhatsApp() {
+        api.post('connections', {
+            user_id: teacher.id
+        });
+        Linking.openURL(`whatsapp://send?phone=${teacher.whatsapp}`);
+    }
+
+    async function handleToggleFavorite() {
+        const favorites = await AsyncStorage.getItem('favorites');
+        let favoritesArray = [];
+
+        if(favorites) {
+            favoritesArray = JSON.parse(favorites);
+        }
+
+        if (isFavorited) {
+            const favoriteIndex = favoritesArray.findIndex((teacherItem: Teacher) => teacherItem.id === teacher.id);
+            favoritesArray.splice(favoriteIndex, 1);
+            setIsFavorited(false);
+        }
+        else {
+
+            favoritesArray.push(teacher);
+            setIsFavorited(true);
+        }
+
+        await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.profile}>
-                <Image style={styles.avatar} source={{ uri: "https://avatars.githubusercontent.com/u/53446642?v=4" }} />
+                <Image style={styles.avatar} source={{ uri: teacher.avatar }} />
                 
                 <View style={styles.profileInfo}>
-                    <Text style={styles.name}>Alerrandro Tomé</Text>
-                    <Text style={styles.subject}>History</Text>
+                    <Text style={styles.name}>{teacher.name}</Text>
+                    <Text style={styles.subject}>{teacher.subject}</Text>
                 </View>
             </View>
             <Text style={styles.bio}>
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit.{'\n'}{'\n'} Inventore iste, similique odit voluptates veritatis natus mollitia ut officiis beatae ab, excepturi deleniti illum aliquam nisi sit reiciendis a suscipit ducimus? Blanditiis aperiam consequatur nisi iure soluta enim sed dolorum hic facilis nemo cupiditate iste odio commodi modi, voluptas quaerat sint?
+                {teacher.bio}
             </Text>
             <View style={styles.footer}>
                 <Text style={styles.price}>
                     Price/Hour {'   '}
-                    <Text style={styles.priceValue}>USD 20,00</Text>
+                    <Text style={styles.priceValue}>USD$ {teacher.cost}</Text>
                 </Text>
 
                 <View style={styles.buttonsContainer}>
-                    <TouchableOpacity style={[styles.favoriteButton, styles.favorited]}>
-                        {/*<Image source={heartOutlineIcon} />*/}
-                        <Image source={unfavoriteIcon} />
+                    <TouchableOpacity
+                        onPress={handleToggleFavorite} 
+                        style={[
+                            styles.favoriteButton, 
+                            isFavorited ? styles.favorited : {}
+                        ]}
+                    >
+                        { isFavorited 
+                            ? <Image source={unfavoriteIcon} /> 
+                            : <Image source={heartOutlineIcon} /> }
                     </TouchableOpacity>                    
-                    <TouchableOpacity style={styles.contactButton}>
+                    <TouchableOpacity onPress={handleLinkToWhatsApp} style={styles.contactButton}>
                         <Image source={whatsappIcon} />
                         <Text style={styles.contactButtonText}>Get in touch</Text>
                     </TouchableOpacity>
